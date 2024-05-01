@@ -3,35 +3,69 @@
 package usecase
 
 type (
-	CheckHealthStatusHandler interface {
+	CheckHealthStatusResultHandler interface {
 		OnCheckHealthStatusHealthy(e CheckHealthStatusHealthy) error
 		OnCheckHealthStatusUnhealthy(e CheckHealthStatusUnhealthy) error
 	}
 	CheckHealthStatusResultEnum interface {
-		Handle(v CheckHealthStatusHandler) error
+		Handle(v CheckHealthStatusResultHandler) error
 	}
 )
 
-func (e CheckHealthStatusHealthy) Handle(v CheckHealthStatusHandler) error {
+func (e CheckHealthStatusHealthy) Handle(v CheckHealthStatusResultHandler) error {
 	return v.OnCheckHealthStatusHealthy(e)
 }
-func (e CheckHealthStatusUnhealthy) Handle(v CheckHealthStatusHandler) error {
+func (e CheckHealthStatusUnhealthy) Handle(v CheckHealthStatusResultHandler) error {
 	return v.OnCheckHealthStatusUnhealthy(e)
 }
 
 var _ = []CheckHealthStatusResultEnum{CheckHealthStatusHealthy{}, CheckHealthStatusUnhealthy{}}
 
-type __CheckHealthStatusHandler struct {
+type __CheckHealthStatusResultHandler struct {
 	__OnCheckHealthStatusHealthy   func(CheckHealthStatusHealthy) error
 	__OnCheckHealthStatusUnhealthy func(CheckHealthStatusUnhealthy) error
 }
 
-func NewCheckHealthStatusHandler(__OnCheckHealthStatusHealthy func(e CheckHealthStatusHealthy) error, __OnCheckHealthStatusUnhealthy func(e CheckHealthStatusUnhealthy) error) CheckHealthStatusHandler {
-	return &__CheckHealthStatusHandler{__OnCheckHealthStatusHealthy: __OnCheckHealthStatusHealthy, __OnCheckHealthStatusUnhealthy: __OnCheckHealthStatusUnhealthy}
+func NewCheckHealthStatusResultHandler(__OnCheckHealthStatusHealthy func(e CheckHealthStatusHealthy) error, __OnCheckHealthStatusUnhealthy func(e CheckHealthStatusUnhealthy) error) CheckHealthStatusResultHandler {
+	return &__CheckHealthStatusResultHandler{__OnCheckHealthStatusHealthy: __OnCheckHealthStatusHealthy, __OnCheckHealthStatusUnhealthy: __OnCheckHealthStatusUnhealthy}
 }
-func (v __CheckHealthStatusHandler) OnCheckHealthStatusHealthy(e CheckHealthStatusHealthy) error {
+func (v __CheckHealthStatusResultHandler) OnCheckHealthStatusHealthy(e CheckHealthStatusHealthy) error {
 	return v.__OnCheckHealthStatusHealthy(e)
 }
-func (v __CheckHealthStatusHandler) OnCheckHealthStatusUnhealthy(e CheckHealthStatusUnhealthy) error {
+func (v __CheckHealthStatusResultHandler) OnCheckHealthStatusUnhealthy(e CheckHealthStatusUnhealthy) error {
 	return v.__OnCheckHealthStatusUnhealthy(e)
+}
+
+type (
+	GreetingResultHandler interface {
+		OnGreetingHello(e GreetingHello) error
+		OnGreetingAbsent(e GreetingAbsent) error
+	}
+	GreetingResultEnum interface {
+		Handle(v GreetingResultHandler) error
+	}
+)
+
+func (e GreetingHello) Handle(v GreetingResultHandler) error {
+	return v.OnGreetingHello(e)
+}
+func (e GreetingAbsent) Handle(v GreetingResultHandler) error {
+	return v.OnGreetingAbsent(e)
+}
+
+var _ = []GreetingResultEnum{GreetingHello{}, GreetingAbsent{}}
+
+type __GreetingResultHandler struct {
+	__OnGreetingHello  func(GreetingHello) error
+	__OnGreetingAbsent func(GreetingAbsent) error
+}
+
+func NewGreetingResultHandler(__OnGreetingHello func(e GreetingHello) error, __OnGreetingAbsent func(e GreetingAbsent) error) GreetingResultHandler {
+	return &__GreetingResultHandler{__OnGreetingHello: __OnGreetingHello, __OnGreetingAbsent: __OnGreetingAbsent}
+}
+func (v __GreetingResultHandler) OnGreetingHello(e GreetingHello) error {
+	return v.__OnGreetingHello(e)
+}
+func (v __GreetingResultHandler) OnGreetingAbsent(e GreetingAbsent) error {
+	return v.__OnGreetingAbsent(e)
 }

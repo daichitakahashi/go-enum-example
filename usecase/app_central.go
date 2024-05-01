@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"crypto/rand"
+	"log"
 	"math/big"
 	"time"
 
@@ -11,7 +12,7 @@ import (
 
 type AppCentral struct{}
 
-//go:generate go run github.com/daichitakahashi/go-enum/cmd/enumgen@latest --out=results.gen.go --visitor="CheckHealthStatusResult:CheckHealthStatusHandler:On*" --accept="CheckHealthStatusResult:Handle" --visitor-impl="*"
+//go:generate go run github.com/daichitakahashi/go-enum/cmd/enumgen@latest --out=results.gen.go --visitor="*:*Handler:On*" --accept="*:Handle" --visitor-impl="*"
 
 type (
 	CheckHealthStatusResult interface {
@@ -54,4 +55,44 @@ func (a *AppCentral) CheckHealthStatus(ctx context.Context) (CheckHealthStatusRe
 		FinishedAt: time.Now(),
 		Cause:      "Today is cloudy",
 	}, nil
+}
+
+type (
+	GreetingResult interface {
+		enum.VisitorReturns[error]
+		GreetingResultEnum
+	}
+
+	GreetingHello struct {
+		enum.MemberOf[GreetingResult]
+
+		Message string
+	}
+	GreetingAbsent struct {
+		enum.MemberOf[GreetingResult]
+	}
+)
+
+func (a *AppCentral) Greeting(ctx context.Context, handler GreetingResultHandler) error {
+	r, err := rand.Int(rand.Reader, big.NewInt(100))
+	if err != nil {
+		return err
+	}
+
+	if r.Int64()%2 == 0 {
+		err := GreetingHello{
+			Message: "Hi!",
+		}.Handle(handler)
+		if err != nil {
+			return err
+		}
+	} else {
+		err := GreetingAbsent{}.Handle(handler)
+		if err != nil {
+			return err
+		}
+	}
+
+	log.Println("Greeting responded")
+	return nil
 }
